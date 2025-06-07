@@ -19,6 +19,7 @@ from app.models import (
 
 from functools import wraps
 
+
 main = Blueprint('main', __name__)
 
 # --- Decorador para roles ---
@@ -32,6 +33,25 @@ def rol_requerido(*roles):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+# --- Validación de acceso a ventas ---
+def validar_acceso_venta(venta):
+    """Valida que el vendedor sea dueño de la venta."""
+    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
+        flash("No tienes permiso para ver esta venta.")
+        return False
+    return True
+
+# --- Validación de contraseña ---
+def validar_contrasena(clave):
+    """Valida complejidad mínima de la contraseña."""
+    if (len(clave) < 8 or
+        clave.lower() == clave or
+        clave.upper() == clave or
+        not any(c.isdigit() for c in clave)):
+        flash('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números.')
+        return False
+    return True
 
 # --- Rutas ---
 
@@ -93,6 +113,8 @@ def registrar_usuario():
             flash('El correo ya está registrado.')
         elif Usuario.query.filter_by(cedula=cedula).first():
             flash('La cédula ya está registrada.')
+        elif not validar_contrasena(clave):
+            return redirect(url_for('main.registrar_usuario'))
         else:
             nueva_clave = generate_password_hash(clave)
             nuevo_usuario = Usuario(
@@ -271,9 +293,8 @@ def detalle_venta(id):
     """Muestra el detalle de una venta específica."""
     venta = Venta.query.get_or_404(id)
 
-    # Si el usuario es vendedor y no es el dueño de la venta, se bloquea el acceso
-    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
-        flash("No tienes permiso para ver esta venta.")
+    # Validar permisos para vendedores
+    if not validar_acceso_venta(venta):
         return redirect(url_for('main.dashboard'))
 
     detalles = DetalleVenta.query.filter_by(venta_id=id).all()
@@ -461,6 +482,11 @@ def ventas_por_usuario_pdf():
 def factura_pdf(id):
     """Genera la factura en PDF de una venta."""
     venta = Venta.query.get_or_404(id)
+
+    # Validar permisos para vendedores
+    if not validar_acceso_venta(venta):
+        return redirect(url_for('main.dashboard'))
+
     detalles = DetalleVenta.query.filter_by(venta_id=id).all()
     vendedor = Usuario.query.get(venta.usuario_id)
     html = render_template('factura_pdf.html', venta=venta, detalles=detalles, vendedor=vendedor)
@@ -547,6 +573,8 @@ def cambiar_contraseña():
             flash('Contraseña actual incorrecta.')
         elif nueva != confirmar:
             flash('La nueva contraseña no coincide.')
+        elif not validar_contrasena(nueva):
+            return redirect(url_for('main.cambiar_contraseña'))
         else:
             current_user.contraseña = generate_password_hash(nueva)
             db.session.commit()

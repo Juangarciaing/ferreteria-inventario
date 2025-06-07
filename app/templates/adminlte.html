@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
   {% block styles %}{% endblock %}
 
   <style>
@@ -104,6 +106,7 @@
 <script src="{{ url_for('static', filename='adminlte/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='adminlte/dist/js/adminlte.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
