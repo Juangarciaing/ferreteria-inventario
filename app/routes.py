@@ -42,6 +42,17 @@ def validar_acceso_venta(venta):
         return False
     return True
 
+# --- Validación de contraseña ---
+def validar_contrasena(clave):
+    """Valida complejidad mínima de la contraseña."""
+    if (len(clave) < 8 or
+        clave.lower() == clave or
+        clave.upper() == clave or
+        not any(c.isdigit() for c in clave)):
+        flash('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números.')
+        return False
+    return True
+
 # --- Rutas ---
 
 @main.route('/')
@@ -102,6 +113,8 @@ def registrar_usuario():
             flash('El correo ya está registrado.')
         elif Usuario.query.filter_by(cedula=cedula).first():
             flash('La cédula ya está registrada.')
+        elif not validar_contrasena(clave):
+            return redirect(url_for('main.registrar_usuario'))
         else:
             nueva_clave = generate_password_hash(clave)
             nuevo_usuario = Usuario(
@@ -560,6 +573,8 @@ def cambiar_contraseña():
             flash('Contraseña actual incorrecta.')
         elif nueva != confirmar:
             flash('La nueva contraseña no coincide.')
+        elif not validar_contrasena(nueva):
+            return redirect(url_for('main.cambiar_contraseña'))
         else:
             current_user.contraseña = generate_password_hash(nueva)
             db.session.commit()

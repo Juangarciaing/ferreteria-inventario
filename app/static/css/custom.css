@@ -6,3 +6,15 @@
 .alert {
     transition: opacity 0.5s ease-in-out;
 }
+
+/* Theme colors for ferreteria */
+.bg-ferreteria {background-color: #f39c12 !important;}
+.text-ferreteria {color: #c0392b !important;}
+.btn-ferreteria {background-color: #c0392b; color: #fff;}
+.btn-ferreteria:hover {background-color: #a93226; color: #fff;}
+
+/* Form styles */
+.form-control:focus {border-color: #f39c12; box-shadow: 0 0 0 0.2rem rgba(243,156,18,.25);}
+
+/* Rounded buttons */
+.btn {border-radius: 4px;}
