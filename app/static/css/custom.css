@@ -1,0 +1,8 @@
+/* Estilos personalizados para la aplicación */
+.card-header h5 {
+    font-weight: 600;
+}
+
+.alert {
+    transition: opacity 0.5s ease-in-out;
+}

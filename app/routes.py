@@ -19,6 +19,7 @@ from app.models import (
 
 from functools import wraps
 
+
 main = Blueprint('main', __name__)
 
 # --- Decorador para roles ---
@@ -32,6 +33,14 @@ def rol_requerido(*roles):
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+# --- Validación de acceso a ventas ---
+def validar_acceso_venta(venta):
+    """Valida que el vendedor sea dueño de la venta."""
+    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
+        flash("No tienes permiso para ver esta venta.")
+        return False
+    return True
 
 # --- Rutas ---
 
@@ -271,9 +280,8 @@ def detalle_venta(id):
     """Muestra el detalle de una venta específica."""
     venta = Venta.query.get_or_404(id)
 
-    # Si el usuario es vendedor y no es el dueño de la venta, se bloquea el acceso
-    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
-        flash("No tienes permiso para ver esta venta.")
+    # Validar permisos para vendedores
+    if not validar_acceso_venta(venta):
         return redirect(url_for('main.dashboard'))
 
     detalles = DetalleVenta.query.filter_by(venta_id=id).all()
@@ -462,9 +470,8 @@ def factura_pdf(id):
     """Genera la factura en PDF de una venta."""
     venta = Venta.query.get_or_404(id)
 
-    # Si el usuario es vendedor y no es el dueño de la venta, se bloquea el acceso
-    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
-        flash("No tienes permiso para ver esta venta.")
+    # Validar permisos para vendedores
+    if not validar_acceso_venta(venta):
         return redirect(url_for('main.dashboard'))
 
     detalles = DetalleVenta.query.filter_by(venta_id=id).all()
