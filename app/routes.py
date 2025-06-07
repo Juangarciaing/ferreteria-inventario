@@ -461,6 +461,12 @@ def ventas_por_usuario_pdf():
 def factura_pdf(id):
     """Genera la factura en PDF de una venta."""
     venta = Venta.query.get_or_404(id)
+
+    # Si el usuario es vendedor y no es el dueño de la venta, se bloquea el acceso
+    if current_user.rol == 'vendedor' and venta.usuario_id != current_user.id:
+        flash("No tienes permiso para ver esta venta.")
+        return redirect(url_for('main.dashboard'))
+
     detalles = DetalleVenta.query.filter_by(venta_id=id).all()
     vendedor = Usuario.query.get(venta.usuario_id)
     html = render_template('factura_pdf.html', venta=venta, detalles=detalles, vendedor=vendedor)
