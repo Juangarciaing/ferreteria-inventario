@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from io import BytesIO
+from decimal import Decimal
 
 from flask import (
     Blueprint, flash, make_response, redirect, render_template,
@@ -198,7 +199,7 @@ def registrar_venta():
         try:
             seleccionados = request.form.getlist('productos')
             detalles = []
-            total = 0
+            total = Decimal('0.00')
 
             if not seleccionados:
                 flash("Debes seleccionar al menos un producto.")
@@ -226,7 +227,7 @@ def registrar_venta():
                     flash(f"No hay suficiente stock para {producto.nombre}")
                     return redirect(url_for('main.registrar_venta'))
 
-                subtotal = float(producto.precio) * cantidad
+                subtotal = producto.precio * cantidad
                 total += subtotal
                 producto.stock -= cantidad
 
@@ -356,8 +357,8 @@ def registrar_compra():
         try:
             producto_id = int(request.form['producto_id'])
             cantidad = int(request.form['cantidad'])
-            precio_unitario = float(request.form['precio_unitario'])
-            total = cantidad * precio_unitario
+            precio_unitario = Decimal(request.form['precio_unitario'])
+            total = precio_unitario * cantidad
 
             compra = Compra(
                 producto_id=producto_id,
