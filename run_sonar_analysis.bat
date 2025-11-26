@@ -58,7 +58,7 @@ echo.
 REM Ejecutar SonarScanner (debe estar en el PATH)
 sonar-scanner.bat ^
   -Dsonar.host.url=https://sonarcloud.io ^
-  -Dsonar.login=50ef69d8ba886cbce2552cd5d20659f9abd5876d
+  -Dsonar.login=d2334ae6c62172c5b933e82f86438f1d500c5649
 
 if %errorlevel% neq 0 (
     echo.

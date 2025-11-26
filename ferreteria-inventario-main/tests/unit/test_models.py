@@ -5,7 +5,7 @@ Pruebas unitarias para modelos ORM
 import pytest
 from datetime import datetime, timezone
 from app.models.producto import Producto, Categoria
-from app.models.usuario import Usuario, RolUsuario
+from app.models.usuario import Usuario
 from app.models.compra import Compra
 from app.models.venta import Venta
 
@@ -18,7 +18,7 @@ class TestCategoriaModel:
         cat = Categoria(nombre="Herramientas", descripcion="Herramientas manuales")
         assert cat.nombre == "Herramientas"
         assert cat.descripcion == "Herramientas manuales"
-        assert cat.activo is True
+        assert cat.activo == 1
     
     def test_categoria_str_representation(self):
         """Test: representación string de categoría"""
@@ -28,7 +28,7 @@ class TestCategoriaModel:
     def test_categoria_defaults(self):
         """Test: valores por defecto"""
         cat = Categoria(nombre="Test")
-        assert cat.activo is True
+        assert cat.activo == 1
         assert cat.descripcion is None
 
 
@@ -47,7 +47,7 @@ class TestProductoModel:
         assert prod.nombre == "Martillo"
         assert prod.precio == 150.00
         assert prod.stock_actual == 10
-        assert prod.activo is True
+        assert prod.activo == 1
     
     def test_producto_con_codigo_barras(self):
         """Test: producto con código de barras"""
@@ -82,7 +82,7 @@ class TestProductoModel:
             stock_minimo=5,
             categoria_id=1
         )
-        assert prod.activo is True
+        assert prod.activo == 1
         assert prod.descripcion is None
         assert prod.proveedor_id is None
 
@@ -95,32 +95,32 @@ class TestUsuarioModel:
         user = Usuario(
             nombre="Juan Pérez",
             email="juan@test.com",
-            rol=RolUsuario.VENDEDOR
+            rol="vendedor"
         )
         user.set_password("password123")
         
         assert user.nombre == "Juan Pérez"
         assert user.email == "juan@test.com"
-        assert user.rol == RolUsuario.VENDEDOR
-        assert user.password_hash is not None
+        assert user.rol == "vendedor"
+        assert user.password is not None
     
     def test_password_hashing(self):
         """Test: hash de contraseña"""
-        user = Usuario(nombre="Test", email="test@test.com", rol=RolUsuario.VENDEDOR)
+        user = Usuario(nombre="Test", email="test@test.com", rol="vendedor")
         user.set_password("secret123")
         
-        assert user.password_hash != "secret123"
+        assert user.password != "secret123"
         assert user.check_password("secret123") is True
         assert user.check_password("wrong") is False
     
     def test_usuario_defaults(self):
         """Test: valores por defecto"""
-        user = Usuario(nombre="Test", email="test@test.com", rol=RolUsuario.VENDEDOR)
-        assert user.activo is True
+        user = Usuario(nombre="Test", email="test@test.com", rol="vendedor")
+        assert user.activo == 1
     
     def test_usuario_str_representation(self):
         """Test: representación string"""
-        user = Usuario(nombre="Test User", email="test@test.com", rol=RolUsuario.ADMIN)
+        user = Usuario(nombre="Test User", email="test@test.com", rol="admin")
         assert str(user) == "<Usuario Test User>"
 
 

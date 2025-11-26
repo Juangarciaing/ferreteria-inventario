@@ -10,7 +10,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import create_app, db
-from app.models.usuario import Usuario, RolUsuario
+from app.models.usuario import Usuario
 from app.models.producto import Producto, Categoria
 from app.models.proveedor import Proveedor
 
@@ -50,8 +50,8 @@ def client(app):
         admin_user = Usuario(
             nombre='Admin Test',
             email='admin@test.com',
-            rol=RolUsuario.ADMIN,
-            activo=True
+            rol='admin',
+            activo=1
         )
         admin_user.set_password('admin123')
         db.session.add(admin_user)
@@ -60,7 +60,7 @@ def client(app):
         categoria_test = Categoria(
             nombre='Categoría Test',
             descripcion='Categoría para pruebas',
-            activo=True
+            activo=1
         )
         db.session.add(categoria_test)
         
@@ -68,7 +68,7 @@ def client(app):
             nombre='Proveedor Test',
             telefono='5512345678',
             email='proveedor@test.com',
-            activo=True
+            activo=1
         )
         db.session.add(proveedor_test)
         
