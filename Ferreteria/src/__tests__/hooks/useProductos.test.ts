@@ -3,21 +3,7 @@
  */
 import { renderHook, act } from '@testing-library/react';
 import { useProductos } from '../../hooks/useProductos';
-
-// Mock del módulo lib/api antes de cualquier import
-jest.mock('../../lib/api', () => ({
-  apiClient: {
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn(),
-  },
-  TokenManager: {
-    getToken: jest.fn(),
-    setToken: jest.fn(),
-    removeToken: jest.fn(),
-  },
-}));
+import { apiClient } from '../../lib/api';
 
 // Mock de react-hot-toast
 jest.mock('react-hot-toast', () => ({
@@ -27,8 +13,8 @@ jest.mock('react-hot-toast', () => ({
   }
 }));
 
-// Importar apiClient después del mock
-const { apiClient } = require('../../lib/api');
+// apiClient will be automatically mocked by Jest using the manual mock in __mocks__
+jest.mock('../../lib/api');
 
 describe('useProductos Hook', () => {
   beforeEach(() => {

@@ -8,9 +8,6 @@ global.TextDecoder = TextDecoder as any;
 // Mock de react-hot-toast
 global.jest = global.jest || ({} as any);
 
-// Mock manual de lib/api
-jest.mock('./lib/api');
-
 const mockToast = {
   success: () => {},
   error: () => {},

@@ -115,7 +115,9 @@ class TestExport(unittest.TestCase):
             headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn('text/csv', response.content_type)    def test_export_invalid_format(self):
+        self.assertIn('text/csv', response.content_type)
+
+    def test_export_invalid_format(self):
         """Test exportar con formato inválido (ignora parámetro)"""
         response = self.client.get('/api/export/productos?format=invalid',
             headers=self.headers)
@@ -123,8 +125,6 @@ class TestExport(unittest.TestCase):
         # El endpoint ignora el formato y siempre devuelve CSV
         self.assertEqual(response.status_code, 200)
         self.assertIn('text/csv', response.content_type)
-        data = json.loads(response.data)
-        self.assertIn('message', data)
     
     def test_export_access_control(self):
         """Test control de acceso para exportación"""
