@@ -1,28 +1,27 @@
-name: SonarCloud Analysis
+name: Build
 
 on:
   push:
     branches:
       - main
-      - develop
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarcloud:
-    name: SonarCloud Scan
+  sonarqube:
+    name: SonarQube
     runs-on: windows-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
       
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.13'
       
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -55,16 +54,11 @@ jobs:
           npm test -- --coverage --watchAll=false --passWithNoTests
         continue-on-error: true
       
-      # SonarCloud Scan
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+      # SonarQube Scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=Juangarciaing_ferreteria-inventario
-            -Dsonar.organization=juangarciaing
       
       # Subir reportes de cobertura como artefactos
       - name: Upload Coverage Reports
