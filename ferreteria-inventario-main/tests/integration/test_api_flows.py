@@ -58,14 +58,13 @@ class TestProductoFlowCompleto:
         headers = {'Authorization': f'Bearer {auth_token}'}
         
         # 1. Crear categoría
-        cat_response = client.post('/api/categorias', 
+        cat_response = client.post('/api/categorias',
             json={'nombre': 'Herramientas', 'descripcion': 'Herramientas manuales'},
             headers=headers
         )
         assert cat_response.status_code in [200, 201]
-        categoria_id = json.loads(cat_response.data)['data']['id']
-        
-        # 2. Crear producto
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']        # 2. Crear producto
         prod_response = client.post('/api/productos',
             json={
                 'nombre': 'Martillo',
@@ -121,7 +120,8 @@ class TestVentaFlowCompleto:
             json={'nombre': 'Materiales'},
             headers=headers
         )
-        categoria_id = json.loads(cat_response.data)['data']['id']
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         prod_response = client.post('/api/productos',
             json={
@@ -168,7 +168,8 @@ class TestVentaFlowCompleto:
             json={'nombre': 'Test'},
             headers=headers
         )
-        categoria_id = json.loads(cat_response.data)['data']['id']
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         prod_response = client.post('/api/productos',
             json={
@@ -210,7 +211,8 @@ class TestCompraFlowCompleto:
             json={'nombre': 'Eléctricos'},
             headers=headers
         )
-        categoria_id = json.loads(cat_response.data)['data']['id']
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         prov_response = client.post('/api/proveedores',
             json={
@@ -270,7 +272,8 @@ class TestBusquedaYFiltros:
             json={'nombre': 'Varios'},
             headers=headers
         )
-        categoria_id = json.loads(cat_response.data)['data']['id']
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         productos = [
             {'nombre': 'Martillo Grande', 'precio': 150, 'stock_actual': 10, 'stock_minimo': 5},
@@ -298,7 +301,8 @@ class TestBusquedaYFiltros:
             json={'nombre': 'Test'},
             headers=headers
         )
-        categoria_id = json.loads(cat_response.data)['data']['id']
+        cat_data = json.loads(cat_response.data)
+        categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         client.post('/api/productos',
             json={

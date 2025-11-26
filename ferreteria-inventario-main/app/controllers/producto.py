@@ -136,10 +136,10 @@ def create_producto(current_user):
             )
         
         # Validar que precio no sea negativo
-        if 'precio' in data and (data['precio'] is None or float(data['precio']) < 0):
+        if 'precio' in data and (data['precio'] is None or float(data['precio']) <= 0):
             return create_response(
                 message="El precio debe ser un valor positivo",
-                errors={'precio': ['Debe ser mayor o igual a 0']},
+                errors={'precio': ['Debe ser mayor a 0']},
                 status_code=400
             )
         
