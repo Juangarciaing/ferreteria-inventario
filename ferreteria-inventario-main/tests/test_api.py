@@ -77,22 +77,24 @@ class TestAuth:
         db.session.add(usuario)
         db.session.commit()
         
-        response = client.post('/api/login', json={
+        response = client.post('/api/auth/login', json={
             'email': TEST_USER_EMAIL,
             'password': TEST_USER_PASSWORD
         })
         
         assert response.status_code == 200
-        assert 'token' in response.json
+        data = response.json
+        assert 'data' in data
+        assert 'token' in data['data']
     
     def test_login_fallido(self, client):
-    """Test de login con credenciales inválidas"""
-    response = client.post('/api/auth/login', json={
-        'email': 'noexiste@test.com',
-        'password': 'wrongpass'
-    })
+        """Test de login con credenciales inválidas"""
+        response = client.post('/api/auth/login', json={
+            'email': 'noexiste@test.com',
+            'password': 'wrongpass'
+        })
 
-    assert response.status_code == 401
+        assert response.status_code == 401
 class TestProductos:
     """Tests de productos"""
     

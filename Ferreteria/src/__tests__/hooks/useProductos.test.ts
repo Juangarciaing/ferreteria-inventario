@@ -3,16 +3,7 @@
  */
 import { renderHook, act } from '@testing-library/react';
 import { useProductos } from '../../hooks/useProductos';
-
-// Mock del API
-jest.mock('../../lib/api', () => ({
-  apiClient: {
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn()
-  }
-}));
+import { apiClient } from '../../lib/api';
 
 // Mock de react-hot-toast
 jest.mock('react-hot-toast', () => ({
@@ -22,9 +13,19 @@ jest.mock('react-hot-toast', () => ({
   }
 }));
 
+// Mock de apiClient methods
+jest.spyOn(apiClient, 'get');
+jest.spyOn(apiClient, 'post');
+jest.spyOn(apiClient, 'put');
+jest.spyOn(apiClient, 'delete');
+
 describe('useProductos Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (apiClient.get as jest.Mock).mockReset();
+    (apiClient.post as jest.Mock).mockReset();
+    (apiClient.put as jest.Mock).mockReset();
+    (apiClient.delete as jest.Mock).mockReset();
   });
 
   test('should initialize with empty state', () => {
@@ -41,8 +42,7 @@ describe('useProductos Hook', () => {
       { id: 2, nombre: 'Producto 2', precio: 20.99, stock: 10, categoria_id: 1, stock_minimo: 3 }
     ];
 
-    const { apiClient } = require('../../lib/api');
-    apiClient.get.mockResolvedValue({ data: mockProductos });
+    (apiClient.get as jest.Mock).mockResolvedValue({ data: mockProductos });
 
     const { result } = renderHook(() => useProductos());
 
@@ -56,8 +56,7 @@ describe('useProductos Hook', () => {
   });
 
   test('should handle load productos error', async () => {
-    const { apiClient } = require('../../lib/api');
-    apiClient.get.mockRejectedValue(new Error('Network error'));
+    (apiClient.get as jest.Mock).mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useProductos());
 
@@ -80,8 +79,7 @@ describe('useProductos Hook', () => {
     };
     const createdProducto = { id: 3, ...newProducto };
 
-    const { apiClient } = require('../../lib/api');
-    apiClient.post.mockResolvedValue({ data: createdProducto });
+    (apiClient.post as jest.Mock).mockResolvedValue({ data: createdProducto });
 
     const { result } = renderHook(() => useProductos());
 
@@ -104,8 +102,7 @@ describe('useProductos Hook', () => {
     };
     const updatedProducto = { ...existingProducto, precio: 12.99 };
 
-    const { apiClient } = require('../../lib/api');
-    apiClient.put.mockResolvedValue({ data: updatedProducto });
+    (apiClient.put as jest.Mock).mockResolvedValue({ data: updatedProducto });
 
     const { result } = renderHook(() => useProductos());
 
@@ -132,8 +129,7 @@ describe('useProductos Hook', () => {
       stock_minimo: 2
     };
 
-    const { apiClient } = require('../../lib/api');
-    apiClient.delete.mockResolvedValue({ data: { message: 'Producto eliminado' } });
+    (apiClient.delete as jest.Mock).mockResolvedValue({ data: { message: 'Producto eliminado' } });
 
     const { result } = renderHook(() => useProductos());
 
