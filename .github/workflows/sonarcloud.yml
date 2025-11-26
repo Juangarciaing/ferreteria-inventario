@@ -63,7 +63,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=Juangarciaing_ferreteria-inventario2
+            -Dsonar.projectKey=Juangarciaing_ferreteria-inventario
             -Dsonar.organization=juangarciaing
       
       # Subir reportes de cobertura como artefactos
