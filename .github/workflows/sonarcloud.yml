@@ -39,6 +39,11 @@ jobs:
       # Backend: Ejecutar pruebas con cobertura
       - name: Run Backend Tests with Coverage
         working-directory: ./ferreteria-inventario-main
+        env:
+          SECRET_KEY: test-secret-key-for-ci
+          FLASK_ENV: testing
+          DATABASE_URL: sqlite:///:memory:
+          TESTING: true
         run: python -m pytest tests/ --cov=app --cov-report=xml:coverage.xml --cov-report=term
         continue-on-error: true
       
