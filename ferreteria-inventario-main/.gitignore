@@ -1,0 +1,303 @@
+﻿# ============================================
+# GITIGNORE - Sistema de Inventario Ferretería
+# ============================================
+
+# ====== PYTHON / BACKEND ======
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+*.pyc
+
+# Entornos virtuales (NO subir dependencias instaladas)
+.venv/
+venv/
+ENV/
+env/
+.virtualenv/
+python-venv/
+Lib/
+Include/
+Scripts/
+
+# Archivos de distribución y build
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Pytest / Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Flask
+instance/
+.webassets-cache
+
+# ====== NODE.JS / FRONTEND ======
+# Dependencias de Node.js (NO subir node_modules)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Archivos de producción del build de frontend
+dist/
+dist-ssr/
+build/
+.output/
+.nuxt/
+.next/
+
+# Cache de npm/yarn/pnpm
+.npm
+.eslintcache
+.stylelintcache
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Vite
+.vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# ====== BASE DE DATOS ======
+# Archivos de base de datos locales
+*.sqlite
+*.sqlite3
+*.db
+
+# Backups de base de datos (pueden ser archivos grandes)
+backups/
+backups/*.sql
+backups/*.dump
+backups/*.bak
+*.sql.gz
+*.dump.gz
+
+# Scripts SQL con datos de prueba (mantener solo estructura)
+datos_ejemplo.sql
+datos_completos.sql
+datos_finales.sql
+agregar_mas_datos.sql
+poblar_datos.sql
+poblar_datos_fixed.sql
+poblar_ventas_compras.sql
+fix_categorias_utf8.sql
+
+# Scripts temporales de desarrollo
+fix_utf8_categorias.py
+check_api_response.py
+test_all_endpoints.py
+test_compras_debug.py
+test_login.py
+test_manual.py
+verify_improvements.py
+create_users.py
+generate_secrets.py
+
+# ====== CONFIGURACIÓN SENSIBLE ======
+# Variables de entorno con contraseñas y secretos
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.local.py
+local_settings.py
+
+# Archivos de configuración con credenciales
+*_config_local.py
+secrets.json
+credentials.json
+*.pem
+*.key
+*.cert
+*.crt
+
+# ====== LOGS Y MONITOREO ======
+# Archivos de log (pueden crecer mucho)
+*.log
+logs/
+*.log.*
+log/
+*.log.txt
+
+# ====== IDE / EDITORES ======
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+tags
+[._]*.un~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ====== SISTEMA OPERATIVO ======
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE_BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ====== ARCHIVOS TEMPORALES ======
+# Archivos temporales generales
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.backup
+*.orig
+*~
+.cache/
+.temp/
+tmp/
+
+# TypeScript
+*.tsbuildinfo
+
+# ====== ARCHIVOS DE DESARROLLO ======
+# Archivos de prueba y desarrollo
+scratch/
+sandbox/
+playground/
+test_output/
+debug/
+
+# Archivos de uploads de usuarios (si existe la funcionalidad)
+uploads/
+media/
+static/uploads/
+public/uploads/
+
+# Documentos privados o borradores
+docs_private/
+NOTES.md
+TODO_private.md
+
+# ====== DEPLOYMENT ======
+# Variables de deployment
+.vercel
+.netlify
+
+# Lock files (opcionales - descomenta si quieres incluirlos)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ====== OTROS ======
+# Archivos grandes generados
+*.pdf
+!docs/*.pdf
+
+# Reportes y exports
+exports/
+reports/*.xlsx
+reports/*.csv
