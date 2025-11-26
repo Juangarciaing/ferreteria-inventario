@@ -118,6 +118,31 @@ def create_producto(current_user):
     try:
         data = request.get_json()
         
+        # Validar datos requeridos
+        if not data:
+            return create_response(
+                message="No se proporcionaron datos",
+                status_code=400
+            )
+        
+        # Validar campos requeridos manualmente antes de pasar al DTO
+        required_fields = ['nombre', 'precio', 'stock', 'categoria_id']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return create_response(
+                message="Campos requeridos faltantes",
+                errors={'missing_fields': missing_fields},
+                status_code=400
+            )
+        
+        # Validar que precio no sea negativo
+        if 'precio' in data and (data['precio'] is None or float(data['precio']) < 0):
+            return create_response(
+                message="El precio debe ser un valor positivo",
+                errors={'precio': ['Debe ser mayor o igual a 0']},
+                status_code=400
+            )
+        
         use_case = container.resolve('create_producto_use_case')
         producto = use_case.execute(data)
         

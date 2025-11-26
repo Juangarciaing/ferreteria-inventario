@@ -25,18 +25,25 @@ def client():
 @pytest.fixture
 def auth_token(client):
     """Token de autenticación para pruebas"""
-    # Crear usuario de prueba
-    response = client.post('/api/auth/register', json={
-        'nombre': 'Test User',
-        'email': 'test@test.com',
-        'password': 'test123',
-        'rol': 'ADMIN'
-    })
+    from app.models.usuario import Usuario
+    from app import db
+    
+    # Crear usuario de prueba directamente en la BD
+    with client.application.app_context():
+        admin_user = Usuario(
+            nombre='Admin Test',
+            email='admin@test.com',
+            rol='admin',
+            activo=1
+        )
+        admin_user.set_password('admin123')
+        db.session.add(admin_user)
+        db.session.commit()
     
     # Login
     response = client.post('/api/auth/login', json={
-        'email': 'test@test.com',
-        'password': 'test123'
+        'email': 'admin@test.com',
+        'password': 'admin123'
     })
     
     data = json.loads(response.data)

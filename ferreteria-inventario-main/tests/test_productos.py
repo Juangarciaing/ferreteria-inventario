@@ -78,7 +78,8 @@ class TestProductos(unittest.TestCase):
         response = self.client.get('/api/productos', headers=self.headers)
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertIsInstance(data, list)
+        self.assertIn('data', data)
+        self.assertIsInstance(data['data'], list)
         self.assertEqual(len(data), 1)
     
     def test_update_producto(self):

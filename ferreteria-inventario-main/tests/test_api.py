@@ -218,7 +218,8 @@ class TestVentas:
         )
         
         assert response.status_code == 201
-        assert 'id' in response.json
+        assert 'id' in response.json['data']
+        assert response.json['data']['total'] == 50.0
 
 
 class TestProveedores:
