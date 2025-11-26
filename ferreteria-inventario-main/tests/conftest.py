@@ -9,8 +9,7 @@ import os
 # Agregar el directorio raíz al path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app import create_app
-from app.extensions import db
+from app import create_app, db
 from app.models.usuario import Usuario, RolUsuario
 from app.models.producto import Producto, Categoria
 from app.models.proveedor import Proveedor
