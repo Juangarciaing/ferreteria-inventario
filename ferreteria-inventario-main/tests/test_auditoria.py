@@ -4,7 +4,8 @@ Tests para auditoría
 import unittest
 import json
 from app import create_app, db
-from app.models import Usuario, AuditoriaLog
+from app.models import Usuario
+from app.models.auditoria import AuditoriaLog
 
 class TestAuditoria(unittest.TestCase):
     def setUp(self):

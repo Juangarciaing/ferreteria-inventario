@@ -3,8 +3,7 @@ Pruebas de integración - Flujos completos de la API
 """
 
 import pytest
-from app import create_app
-from app.extensions import db
+from app import create_app, db
 from flask import json
 
 

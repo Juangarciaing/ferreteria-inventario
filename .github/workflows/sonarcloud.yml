@@ -10,7 +10,7 @@ on:
 jobs:
   sonarqube:
     name: SonarQube
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
@@ -50,7 +50,9 @@ jobs:
       # Frontend: Instalar dependencias
       - name: Install Frontend dependencies
         working-directory: ./Ferreteria
-        run: npm ci
+        run: |
+          npm ci
+          npm install --save-dev @types/jest
       
       # Frontend: Ejecutar pruebas con cobertura
       - name: Run Frontend Tests with Coverage

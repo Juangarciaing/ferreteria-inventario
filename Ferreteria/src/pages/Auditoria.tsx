@@ -3,8 +3,8 @@ import {
   DocumentTextIcon, 
   UserIcon, 
   CalendarIcon,
-  FilterIcon,
-  DownloadIcon,
+  FunnelIcon,
+  ArrowDownTrayIcon,
   EyeIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
@@ -227,7 +227,7 @@ const Auditoria: React.FC = () => {
             onClick={exportarLogs}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            <DownloadIcon className="h-4 w-4 mr-2" />
+            <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
             Exportar Logs
           </button>
         </div>
@@ -319,7 +319,7 @@ const Auditoria: React.FC = () => {
       {/* Filtros */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center mb-4">
-          <FilterIcon className="h-5 w-5 text-gray-400 mr-2" />
+          <FunnelIcon className="h-5 w-5 text-gray-400 mr-2" />
           <h3 className="text-lg font-medium text-gray-900">Filtros</h3>
         </div>
         
