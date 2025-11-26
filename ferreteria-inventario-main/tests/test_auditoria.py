@@ -182,7 +182,8 @@ class TestAuditoria(unittest.TestCase):
         # Login como vendedor
         login_response = self.client.post('/api/auth/login', 
             json={'email': 'vendedor@test.com', 'password': 'vendedor123'})
-        vendedor_token = json.loads(login_response.data)['token']
+        response_data = json.loads(login_response.data)
+        vendedor_token = response_data['data']['token']
         vendedor_headers = {'Authorization': f'Bearer {vendedor_token}'}
         
         # Intentar acceder a auditoría

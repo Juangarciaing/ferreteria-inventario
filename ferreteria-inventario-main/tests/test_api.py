@@ -128,7 +128,8 @@ class TestProductos:
         response = client.get('/api/productos', headers=auth_headers)
         
         assert response.status_code == 200
-        assert isinstance(response.json, list)
+        assert 'data' in response.json
+        assert isinstance(response.json['data'], list)
     
     def test_obtener_producto(self, client, auth_headers):
         """Test de obtener un producto específico"""
@@ -175,7 +176,8 @@ class TestCategorias:
         response = client.get('/api/categorias', headers=auth_headers)
         
         assert response.status_code == 200
-        assert isinstance(response.json, list)
+        assert 'data' in response.json
+        assert isinstance(response.json['data'], list)
 
 
 class TestVentas:

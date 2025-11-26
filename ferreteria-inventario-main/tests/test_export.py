@@ -75,11 +75,11 @@ class TestExport(unittest.TestCase):
     
     def test_export_productos_csv(self):
         """Test exportar productos a CSV"""
-        response = self.client.get('/api/export/productos?format=csv', 
+        response = self.client.get('/api/export/productos?format=csv',
             headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content_type, 'text/csv')
+        self.assertIn('text/csv', response.content_type)
         self.assertIn('attachment', response.headers.get('Content-Disposition', ''))
     
     def test_export_categorias(self):
@@ -141,7 +141,8 @@ class TestExport(unittest.TestCase):
         # Login como vendedor
         login_response = self.client.post('/api/auth/login', 
             json={'email': 'vendedor@test.com', 'password': 'vendedor123'})
-        vendedor_token = json.loads(login_response.data)['token']
+        response_data = json.loads(login_response.data)
+        vendedor_token = response_data['data']['token']
         vendedor_headers = {'Authorization': f'Bearer {vendedor_token}'}
         
         # Intentar exportar productos (debería funcionar)

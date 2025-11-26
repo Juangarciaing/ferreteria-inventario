@@ -5,6 +5,29 @@ import { TextEncoder, TextDecoder } from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder as any;
 
+// Mock del módulo lib/api globalmente
+jest.mock('./lib/api', () => ({
+  apiClient: {
+    get: jest.fn(() => Promise.resolve({ data: {} })),
+    post: jest.fn(() => Promise.resolve({ data: {} })),
+    put: jest.fn(() => Promise.resolve({ data: {} })),
+    patch: jest.fn(() => Promise.resolve({ data: {} })),
+    delete: jest.fn(() => Promise.resolve({ data: {} })),
+    interceptors: {
+      request: { use: jest.fn() },
+      response: { use: jest.fn() },
+    },
+  },
+  TokenManager: {
+    getToken: jest.fn(() => null),
+    setToken: jest.fn(),
+    removeToken: jest.fn(),
+    setUser: jest.fn(),
+    getUser: jest.fn(() => null),
+    removeUser: jest.fn(),
+  },
+}));
+
 // Mock de react-hot-toast
 global.jest = global.jest || ({} as any);
 
