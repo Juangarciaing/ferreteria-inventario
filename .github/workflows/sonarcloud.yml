@@ -28,30 +28,29 @@ jobs:
         with:
           node-version: '18'
       
-      # Backend: Instalar dependencias y ejecutar pruebas con cobertura
+      # Backend: Instalar dependencias
       - name: Install Python dependencies
+        working-directory: ./ferreteria-inventario-main
         run: |
-          cd ferreteria-inventario-main
-          py -m pip install --upgrade pip
-          py -m pip install -r requirements.txt
-          py -m pip install pytest pytest-cov
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pytest pytest-cov
       
+      # Backend: Ejecutar pruebas con cobertura
       - name: Run Backend Tests with Coverage
-        run: |
-          cd ferreteria-inventario-main
-          py -m pytest tests/ --cov=app --cov-report=xml:coverage.xml --cov-report=term
+        working-directory: ./ferreteria-inventario-main
+        run: python -m pytest tests/ --cov=app --cov-report=xml:coverage.xml --cov-report=term
         continue-on-error: true
       
-      # Frontend: Instalar dependencias y ejecutar pruebas con cobertura
+      # Frontend: Instalar dependencias
       - name: Install Frontend dependencies
-        run: |
-          cd Ferreteria
-          npm ci
+        working-directory: ./Ferreteria
+        run: npm ci
       
+      # Frontend: Ejecutar pruebas con cobertura
       - name: Run Frontend Tests with Coverage
-        run: |
-          cd Ferreteria
-          npm test -- --coverage --watchAll=false --passWithNoTests
+        working-directory: ./Ferreteria
+        run: npm test -- --coverage --watchAll=false --passWithNoTests --silent
         continue-on-error: true
       
       # SonarQube Scan
