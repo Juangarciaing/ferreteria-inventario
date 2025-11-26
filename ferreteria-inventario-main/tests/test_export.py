@@ -29,6 +29,7 @@ class TestExport(unittest.TestCase):
         # Crear categoría
         self.categoria = Categoria(nombre='Herramientas')
         db.session.add(self.categoria)
+        db.session.flush()  # Flush to get the ID
         
         # Crear producto
         self.producto = Producto(
@@ -44,7 +45,8 @@ class TestExport(unittest.TestCase):
         # Obtener token
         login_response = self.client.post('/api/auth/login', 
             json={'email': 'admin@test.com', 'password': 'admin123'})
-        self.token = json.loads(login_response.data)['token']
+        response_data = json.loads(login_response.data)
+        self.token = response_data['data']['token']
         self.headers = {'Authorization': f'Bearer {self.token}'}
     
     def tearDown(self):

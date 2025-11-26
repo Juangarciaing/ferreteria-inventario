@@ -50,12 +50,12 @@ def auth_headers(client):
     db.session.commit()
     
     # Login
-    response = client.post('/api/login', json={
+    response = client.post('/api/auth/login', json={
         'email': TEST_ADMIN_EMAIL,
         'password': TEST_ADMIN_PASSWORD
     })
-    
-    token = response.json['token']
+
+    token = response.json['data']['token']
     return {'Authorization': f'Bearer {token}'}
 
 
@@ -86,15 +86,13 @@ class TestAuth:
         assert 'token' in response.json
     
     def test_login_fallido(self, client):
-        """Test de login con credenciales inválidas"""
-        response = client.post('/api/login', json={
-            'email': 'noexiste@test.com',
-            'password': 'wrongpass'
-        })
-        
-        assert response.status_code == 401
+    """Test de login con credenciales inválidas"""
+    response = client.post('/api/auth/login', json={
+        'email': 'noexiste@test.com',
+        'password': 'wrongpass'
+    })
 
-
+    assert response.status_code == 401
 class TestProductos:
     """Tests de productos"""
     

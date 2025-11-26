@@ -40,9 +40,9 @@ class TestAuth(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertIn('token', data)
-        self.assertIn('user', data)
-        self.assertEqual(data['user']['email'], 'test@test.com')
+        self.assertIn('token', data['data'])
+        self.assertIn('usuario', data['data'])
+        self.assertEqual(data['data']['usuario']['email'], 'test@test.com')
     
     def test_login_invalid_credentials(self):
         """Test login con credenciales inválidas"""
@@ -70,9 +70,10 @@ class TestAuth(unittest.TestCase):
     def test_protected_route_with_token(self):
         """Test ruta protegida con token válido"""
         # Login para obtener token
-        login_response = self.client.post('/api/auth/login', 
+        login_response = self.client.post('/api/auth/login',
             json={'email': 'test@test.com', 'password': 'test123'})
-        token = json.loads(login_response.data)['token']
+        response_data = json.loads(login_response.data)
+        token = response_data['data']['token']
         
         # Usar token para acceder a ruta protegida
         headers = {'Authorization': f'Bearer {token}'}

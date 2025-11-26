@@ -29,9 +29,10 @@ class TestAuditoria(unittest.TestCase):
         db.session.commit()
         
         # Obtener token
-        login_response = self.client.post('/api/auth/login', 
+        login_response = self.client.post('/api/auth/login',
             json={'email': 'admin@test.com', 'password': 'admin123'})
-        self.token = json.loads(login_response.data)['token']
+        response_data = json.loads(login_response.data)
+        self.token = response_data['data']['token']
         self.headers = {'Authorization': f'Bearer {self.token}'}
     
     def tearDown(self):
