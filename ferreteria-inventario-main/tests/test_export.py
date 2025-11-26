@@ -89,7 +89,6 @@ class TestExport(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertIn('text/csv', response.content_type)
-        self.assertEqual(response.content_type, 'application/pdf')
     
     def test_export_with_filters(self):
         """Test exportar con filtros"""
@@ -97,7 +96,9 @@ class TestExport(unittest.TestCase):
             headers=self.headers)
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn('text/csv', response.content_type)    def test_export_stock_bajo(self):
+        self.assertIn('text/csv', response.content_type)
+
+    def test_export_stock_bajo(self):
         """Test exportar productos con stock bajo"""
         # Crear producto con stock bajo
         producto_bajo = Producto(
