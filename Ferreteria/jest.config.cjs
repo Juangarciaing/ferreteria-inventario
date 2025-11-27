@@ -8,6 +8,7 @@ module.exports = {
       '<rootDir>/src/__mocks__/fileMock.js',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^.*/lib/api$': '<rootDir>/src/lib/__mocks__/api.ts',
   },
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {

@@ -43,22 +43,29 @@ def token_required(f):
             try:
                 token = auth_header.split(" ")[1]  # Bearer <token>
             except IndexError:
-                raise UnauthorizedError('Formato de token inválido')
+                return jsonify({'message': 'Formato de token inválido'}), 401
         
         if not token:
-            raise UnauthorizedError('Token requerido')
+            return jsonify({'message': 'Token requerido'}), 401
         
         try:
-            payload = JWTManager.decode_token(token)
-            current_user_data = {
-                'id': payload['user_id'],
-                'rol': payload['rol']
-            }
-            return f(current_user_data, *args, **kwargs)
+            # Use SECRET_KEY for compatibility with existing tokens
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            
+            # Get full user object from database
+            from app.models import Usuario
+            current_user = Usuario.query.get(payload['user_id'])
+            
+            if not current_user:
+                return jsonify({'message': 'Usuario no encontrado'}), 401
+            
+            return f(current_user, *args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return jsonify({'message': 'Token expirado'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'message': 'Token inválido'}), 401
         except Exception as e:
-            if isinstance(e, (UnauthorizedError, ForbiddenError)):
-                raise
-            raise UnauthorizedError('Token inválido')
+            return jsonify({'message': 'Error al verificar token'}), 401
     
     return decorated
 

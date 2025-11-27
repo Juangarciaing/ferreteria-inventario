@@ -121,8 +121,16 @@ def register_blueprints(app):
 
 def register_error_handlers(app):
     """Registrar manejadores de errores globales"""
-    from app.utils import handle_error
-    from app.exceptions import BusinessLogicError
+    from app.utils import handle_error, create_response
+    from app.exceptions import BusinessLogicError, UnauthorizedError, ForbiddenError
+    
+    @app.errorhandler(UnauthorizedError)
+    def handle_unauthorized_error(error):
+        return create_response(message=str(error), status_code=401)
+    
+    @app.errorhandler(ForbiddenError)
+    def handle_forbidden_error(error):
+        return create_response(message=str(error), status_code=403)
     
     @app.errorhandler(BusinessLogicError)
     def handle_business_error(error):
@@ -130,11 +138,9 @@ def register_error_handlers(app):
     
     @app.errorhandler(404)
     def not_found(error):
-        from app.utils import create_response
         return create_response(message="Endpoint no encontrado", status_code=404)
     
     @app.errorhandler(500)
     def internal_error(error):
-        from app.utils import create_response
         db.session.rollback()
         return create_response(message="Error interno del servidor", status_code=500)
