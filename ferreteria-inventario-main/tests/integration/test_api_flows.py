@@ -77,7 +77,8 @@ class TestProductoFlowCompleto:
             headers=headers
         )
         assert prod_response.status_code in [200, 201]
-        producto_id = json.loads(prod_response.data)['data']['id']
+        prod_data = json.loads(prod_response.data)
+        producto_id = prod_data.get('data', prod_data).get('id') or prod_data.get('id')
         
         # 3. Leer producto
         get_response = client.get(f'/api/productos/{producto_id}', headers=headers)
@@ -157,7 +158,8 @@ class TestVentaFlowCompleto:
         
         # 3. Verificar descuento de stock
         get_prod_response = client.get(f'/api/productos/{producto_id}', headers=headers)
-        producto_actual = json.loads(get_prod_response.data)['data']
+        prod_resp_data = json.loads(get_prod_response.data)
+        producto_actual = prod_resp_data.get('data', prod_resp_data)
         assert producto_actual['stock_actual'] == 45  # 50 - 5
     
     def test_venta_sin_stock_suficiente(self, client, auth_token):
@@ -225,7 +227,11 @@ class TestCompraFlowCompleto:
             headers=headers
         )
         prov_data = json.loads(prov_response.data)
-        proveedor_id = prov_data.get('data', prov_data).get('id') or prov_data['id']
+        # Handle both {'data': {'id': ...}} and {'id': ...} formats
+        if 'data' in prov_data:
+            proveedor_id = prov_data['data']['id']
+        else:
+            proveedor_id = prov_data['id']
         
         prod_response = client.post('/api/productos',
             json={
@@ -292,7 +298,8 @@ class TestBusquedaYFiltros:
         search_response = client.get('/api/productos/search?q=martillo', headers=headers)
         assert search_response.status_code == 200
         search_data = json.loads(search_response.data)
-        resultados = search_data.get('data', search_data if isinstance(search_data, list) else [])
+        # Handle both list and {'data': list} formats
+        resultados = search_data['data'] if isinstance(search_data, dict) and 'data' in search_data else search_data
         assert len(resultados) == 2
         assert all('martillo' in r['nombre'].lower() for r in resultados)
     
@@ -332,6 +339,7 @@ class TestBusquedaYFiltros:
         response = client.get('/api/productos/stock-bajo', headers=headers)
         assert response.status_code == 200
         stock_data = json.loads(response.data)
-        productos_bajo = stock_data.get('data', stock_data if isinstance(stock_data, list) else [])
+        # Handle both list and {'data': list} formats
+        productos_bajo = stock_data['data'] if isinstance(stock_data, dict) and 'data' in stock_data else stock_data
         assert len(productos_bajo) == 1
         assert productos_bajo[0]['nombre'] == 'Producto Stock Bajo'
