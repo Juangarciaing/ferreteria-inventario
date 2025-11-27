@@ -30,7 +30,10 @@ class InventarioUser(HttpUser):
     
     def _get_headers(self):
         """Retorna headers con token de autenticación"""
-        return {"Authorization": f"Bearer {self.token}"} if self.token else {}
+        headers = {"Content-Type": "application/json"}
+        if getattr(self, "token", None):
+            headers["Authorization"] = f"Bearer {self.token}"
+        return headers
     
     @task(5)
     def listar_productos(self):
@@ -42,7 +45,16 @@ class InventarioUser(HttpUser):
             name="/api/productos [GET]"
         ) as response:
             if response.status_code == 200:
-                response.success()
+                try:
+                    data = response.json()
+                    # Aceptar tanto lista simple como objeto paginado o envuelto en data
+                    productos = data.get("data", data) if isinstance(data, dict) else data
+                    if not isinstance(productos, (list, dict)):
+                        response.failure("Formato de respuesta inesperado en /api/productos")
+                    else:
+                        response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/productos: {e}")
             else:
                 response.failure(f"Status: {response.status_code}")
     
@@ -59,7 +71,15 @@ class InventarioUser(HttpUser):
             name="/api/productos/search [GET]"
         ) as response:
             if response.status_code == 200:
-                response.success()
+                try:
+                    data = response.json()
+                    resultados = data.get("data", data) if isinstance(data, dict) else data
+                    if not isinstance(resultados, (list, dict)):
+                        response.failure("Formato de respuesta inesperado en /api/productos/search")
+                    else:
+                        response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/productos/search: {e}")
             else:
                 response.failure(f"Status: {response.status_code}")
     
@@ -73,7 +93,15 @@ class InventarioUser(HttpUser):
             name="/api/categorias [GET]"
         ) as response:
             if response.status_code == 200:
-                response.success()
+                try:
+                    data = response.json()
+                    categorias = data.get("data", data) if isinstance(data, dict) else data
+                    if not isinstance(categorias, (list, dict)):
+                        response.failure("Formato de respuesta inesperado en /api/categorias")
+                    else:
+                        response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/categorias: {e}")
             else:
                 response.failure(f"Status: {response.status_code}")
     
@@ -87,7 +115,15 @@ class InventarioUser(HttpUser):
             name="/api/productos/stock-bajo [GET]"
         ) as response:
             if response.status_code == 200:
-                response.success()
+                try:
+                    data = response.json()
+                    productos = data.get("data", data) if isinstance(data, dict) else data
+                    if not isinstance(productos, (list, dict)):
+                        response.failure("Formato de respuesta inesperado en /api/productos/stock-bajo")
+                    else:
+                        response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/productos/stock-bajo: {e}")
             else:
                 response.failure(f"Status: {response.status_code}")
     
@@ -104,6 +140,7 @@ class InventarioUser(HttpUser):
             name="/api/productos/{id} [GET]"
         ) as response:
             if response.status_code in [200, 404]:
+                # 200: producto encontrado, 404: no existe el ID; ambos son válidos
                 response.success()
             else:
                 response.failure(f"Status: {response.status_code}")
@@ -131,9 +168,13 @@ class InventarioUser(HttpUser):
             name="/api/ventas [POST]"
         ) as response:
             if response.status_code in [200, 201]:
-                response.success()
+                try:
+                    _ = response.json()
+                    response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/ventas: {e}")
             elif response.status_code == 400:
-                # Stock insuficiente es aceptable en pruebas
+                # Stock insuficiente u otras validaciones de negocio son aceptables en pruebas
                 response.success()
             else:
                 response.failure(f"Status: {response.status_code}")
@@ -148,7 +189,11 @@ class InventarioUser(HttpUser):
             name="/api/dashboard/stats [GET]"
         ) as response:
             if response.status_code == 200:
-                response.success()
+                try:
+                    _ = response.json()
+                    response.success()
+                except Exception as e:
+                    response.failure(f"Error parseando JSON en /api/dashboard/stats: {e}")
             else:
                 response.failure(f"Status: {response.status_code}")
 
