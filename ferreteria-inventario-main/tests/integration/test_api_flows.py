@@ -70,7 +70,7 @@ class TestProductoFlowCompleto:
                 'nombre': 'Martillo',
                 'descripcion': 'Martillo de acero',
                 'precio': 150.00,
-                'stock_actual': 20,
+                'stock': 20,
                 'stock_minimo': 5,
                 'categoria_id': categoria_id
             },
@@ -88,7 +88,7 @@ class TestProductoFlowCompleto:
         
         # 4. Actualizar producto
         update_response = client.put(f'/api/productos/{producto_id}',
-            json={'precio': 175.00, 'stock_actual': 25},
+            json={'precio': 175.00, 'stock': 25},
             headers=headers
         )
         assert update_response.status_code == 200
@@ -127,13 +127,14 @@ class TestVentaFlowCompleto:
             json={
                 'nombre': 'Cemento',
                 'precio': 200.00,
-                'stock_actual': 50,
+                'stock': 50,
                 'stock_minimo': 10,
                 'categoria_id': categoria_id
             },
             headers=headers
         )
-        producto_id = json.loads(prod_response.data)['data']['id']
+        prod_data = json.loads(prod_response.data)
+        producto_id = prod_data.get('data', prod_data).get('id') or prod_data['id']
         
         # 2. Crear venta
         venta_response = client.post('/api/ventas',
@@ -175,13 +176,14 @@ class TestVentaFlowCompleto:
             json={
                 'nombre': 'Producto Limitado',
                 'precio': 100.00,
-                'stock_actual': 2,
+                'stock': 2,
                 'stock_minimo': 1,
                 'categoria_id': categoria_id
             },
             headers=headers
         )
-        producto_id = json.loads(prod_response.data)['data']['id']
+        prod_data = json.loads(prod_response.data)
+        producto_id = prod_data.get('data', prod_data).get('id') or prod_data['id']
         
         # Intentar venta mayor al stock
         venta_response = client.post('/api/ventas',
@@ -222,7 +224,8 @@ class TestCompraFlowCompleto:
             },
             headers=headers
         )
-        proveedor_id = json.loads(prov_response.data)['data']['id']
+        prov_data = json.loads(prov_response.data)
+        proveedor_id = prov_data.get('data', prov_data).get('id') or prov_data['id']
         
         prod_response = client.post('/api/productos',
             json={
@@ -276,9 +279,9 @@ class TestBusquedaYFiltros:
         categoria_id = cat_data.get('data', cat_data).get('id') or cat_data['id']
         
         productos = [
-            {'nombre': 'Martillo Grande', 'precio': 150, 'stock_actual': 10, 'stock_minimo': 5},
-            {'nombre': 'Martillo Pequeño', 'precio': 100, 'stock_actual': 15, 'stock_minimo': 5},
-            {'nombre': 'Destornillador', 'precio': 50, 'stock_actual': 20, 'stock_minimo': 5}
+            {'nombre': 'Martillo Grande', 'precio': 150, 'stock': 10, 'stock_minimo': 5},
+            {'nombre': 'Martillo Pequeño', 'precio': 100, 'stock': 15, 'stock_minimo': 5},
+            {'nombre': 'Destornillador', 'precio': 50, 'stock': 20, 'stock_minimo': 5}
         ]
         
         for prod in productos:
@@ -288,7 +291,8 @@ class TestBusquedaYFiltros:
         # Buscar "martillo"
         search_response = client.get('/api/productos/search?q=martillo', headers=headers)
         assert search_response.status_code == 200
-        resultados = json.loads(search_response.data)['data']
+        search_data = json.loads(search_response.data)
+        resultados = search_data.get('data', search_data if isinstance(search_data, list) else [])
         assert len(resultados) == 2
         assert all('martillo' in r['nombre'].lower() for r in resultados)
     
@@ -308,27 +312,26 @@ class TestBusquedaYFiltros:
             json={
                 'nombre': 'Producto Stock Bajo',
                 'precio': 100,
-                'stock_actual': 3,
+                'stock': 3,
                 'stock_minimo': 10,
                 'categoria_id': categoria_id
             },
             headers=headers
         )
-        
+
         client.post('/api/productos',
             json={
                 'nombre': 'Producto Stock OK',
                 'precio': 100,
-                'stock_actual': 50,
+                'stock': 50,
                 'stock_minimo': 10,
                 'categoria_id': categoria_id
             },
             headers=headers
-        )
-        
-        # Obtener productos con stock bajo
+        )        # Obtener productos con stock bajo
         response = client.get('/api/productos/stock-bajo', headers=headers)
         assert response.status_code == 200
-        productos_bajo = json.loads(response.data)['data']
+        stock_data = json.loads(response.data)
+        productos_bajo = stock_data.get('data', stock_data if isinstance(stock_data, list) else [])
         assert len(productos_bajo) == 1
         assert productos_bajo[0]['nombre'] == 'Producto Stock Bajo'

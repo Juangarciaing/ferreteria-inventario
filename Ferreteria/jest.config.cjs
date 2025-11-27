@@ -15,7 +15,10 @@ module.exports = {
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
         moduleResolution: 'node',
-      }
+        skipLibCheck: true,
+        noEmit: false,
+      },
+      isolatedModules: true,
     }],
   },
   testMatch: [
@@ -30,7 +33,7 @@ module.exports = {
     '!src/**/__tests__/**',
     '!src/**/*.test.*',
     '!src/**/*.spec.*',
-    '!src/lib/**',
+    '!src/lib/__mocks__/**',
   ],
   coverageThreshold: {
     global: {

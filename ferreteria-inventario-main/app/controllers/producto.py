@@ -135,13 +135,22 @@ def create_producto(current_user):
                 status_code=400
             )
         
-        # Validar que precio no sea negativo
-        if 'precio' in data and (data['precio'] is None or float(data['precio']) <= 0):
-            return create_response(
-                message="El precio debe ser un valor positivo",
-                errors={'precio': ['Debe ser mayor a 0']},
-                status_code=400
-            )
+        # Validar que precio no sea negativo o cero
+        if 'precio' in data:
+            try:
+                precio_val = float(data['precio'])
+                if precio_val <= 0:
+                    return create_response(
+                        message="El precio debe ser un valor positivo",
+                        errors={'precio': ['Debe ser mayor a 0']},
+                        status_code=400
+                    )
+            except (ValueError, TypeError):
+                return create_response(
+                    message="El precio debe ser un número válido",
+                    errors={'precio': ['Valor inválido']},
+                    status_code=400
+                )
         
         use_case = container.resolve('create_producto_use_case')
         producto = use_case.execute(data)
@@ -159,6 +168,12 @@ def create_producto(current_user):
         )
     except BusinessLogicError as e:
         return create_response(message=str(e), status_code=409)
+    except KeyError as e:
+        # Capturar errores de campos faltantes
+        return create_response(
+            message=f"Campo requerido faltante: {str(e)}",
+            status_code=400
+        )
     except Exception as e:
         return handle_error(e)
 
