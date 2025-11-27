@@ -12,20 +12,7 @@ jest.mock('react-hot-toast', () => ({
   }
 }));
 
-// Mock the entire lib/api module
-jest.mock('../../lib/api', () => ({
-  apiClient: {
-    get: jest.fn(() => Promise.resolve({ data: [] })),
-    post: jest.fn(() => Promise.resolve({ data: {} })),
-    put: jest.fn(() => Promise.resolve({ data: {} })),
-    delete: jest.fn(() => Promise.resolve({ data: {} })),
-  },
-  TokenManager: {
-    getToken: jest.fn(() => 'mock-token'),
-    setToken: jest.fn(),
-    removeToken: jest.fn(),
-  }
-}));
+// lib/api is already globally mocked in setupTests.ts
 
 describe('useProductos Hook', () => {
   beforeEach(() => {

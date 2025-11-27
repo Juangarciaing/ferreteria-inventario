@@ -17,9 +17,7 @@ module.exports = {
         allowSyntheticDefaultImports: true,
         moduleResolution: 'node',
         skipLibCheck: true,
-        noEmit: false,
       },
-      isolatedModules: true,
     }],
   },
   testMatch: [

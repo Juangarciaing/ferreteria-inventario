@@ -52,3 +52,23 @@ global.IntersectionObserver = class IntersectionObserver {
   rootMargin = '';
   thresholds = [];
 } as any;
+
+// Global mock for lib/api module - must be after jest-dom import
+jest.mock('./lib/api', () => ({
+  apiClient: {
+    get: jest.fn(() => Promise.resolve({ data: [] })),
+    post: jest.fn(() => Promise.resolve({ data: {} })),
+    put: jest.fn(() => Promise.resolve({ data: {} })),
+    delete: jest.fn(() => Promise.resolve({ data: {} })),
+    authFetch: jest.fn(() => Promise.resolve({ data: {} })),
+  },
+  TokenManager: {
+    getToken: jest.fn(() => 'mock-token'),
+    setToken: jest.fn(),
+    removeToken: jest.fn(),
+    getUser: jest.fn(() => null),
+    setUser: jest.fn(),
+    removeUser: jest.fn(),
+    clear: jest.fn(),
+  }
+}));

@@ -64,7 +64,26 @@ def register_blueprints(app):
             'api_docs': '/api'
         })
     
-    # API Blueprint principal
+    # === Clean Architecture Controllers (register FIRST to take precedence) ===
+    from .controllers.usuario import usuario_bp
+    app.register_blueprint(usuario_bp)
+    
+    from .controllers.producto import producto_bp
+    app.register_blueprint(producto_bp)
+    
+    from .controllers.categoria import categoria_bp
+    app.register_blueprint(categoria_bp)
+    
+    from .controllers.proveedor import proveedor_bp
+    app.register_blueprint(proveedor_bp)
+    
+    from .controllers.venta import venta_bp
+    app.register_blueprint(venta_bp)
+    
+    from .controllers.compra import compra_bp
+    app.register_blueprint(compra_bp)
+    
+    # API Blueprint principal (legacy routes, registered after for backward compatibility)
     from .api_routes import api
     app.register_blueprint(api, url_prefix='/api')
     
@@ -99,25 +118,6 @@ def register_blueprints(app):
     # ===== API de Health Check =====
     from .api_health import health_bp
     app.register_blueprint(health_bp)
-    
-    # === Clean Architecture Controllers ===
-    from .controllers.usuario import usuario_bp
-    app.register_blueprint(usuario_bp)
-    
-    from .controllers.producto import producto_bp
-    app.register_blueprint(producto_bp)
-    
-    from .controllers.categoria import categoria_bp
-    app.register_blueprint(categoria_bp)
-    
-    from .controllers.proveedor import proveedor_bp
-    app.register_blueprint(proveedor_bp)
-    
-    from .controllers.venta import venta_bp
-    app.register_blueprint(venta_bp)
-    
-    from .controllers.compra import compra_bp
-    app.register_blueprint(compra_bp)
 
 def register_error_handlers(app):
     """Registrar manejadores de errores globales"""

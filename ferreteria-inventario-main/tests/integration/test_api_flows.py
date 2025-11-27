@@ -83,7 +83,8 @@ class TestProductoFlowCompleto:
         # 3. Leer producto
         get_response = client.get(f'/api/productos/{producto_id}', headers=headers)
         assert get_response.status_code == 200
-        producto = json.loads(get_response.data)['data']
+        get_data = json.loads(get_response.data)
+        producto = get_data.get('data', get_data)
         assert producto['nombre'] == 'Martillo'
         assert producto['precio'] == 150.00
         
@@ -160,7 +161,7 @@ class TestVentaFlowCompleto:
         get_prod_response = client.get(f'/api/productos/{producto_id}', headers=headers)
         prod_resp_data = json.loads(get_prod_response.data)
         producto_actual = prod_resp_data.get('data', prod_resp_data)
-        assert producto_actual['stock_actual'] == 45  # 50 - 5
+        assert producto_actual['stock'] == 45  # 50 - 5
     
     def test_venta_sin_stock_suficiente(self, client, auth_token):
         """Test: venta rechazada por stock insuficiente"""
@@ -221,17 +222,23 @@ class TestCompraFlowCompleto:
         prov_response = client.post('/api/proveedores',
             json={
                 'nombre': 'Proveedor Test',
+                'contacto': 'Juan Pérez',
                 'telefono': '5512345678',
                 'email': 'proveedor@test.com'
             },
             headers=headers
         )
+        assert prov_response.status_code in [200, 201]
         prov_data = json.loads(prov_response.data)
         # Handle both {'data': {'id': ...}} and {'id': ...} formats
-        if 'data' in prov_data:
-            proveedor_id = prov_data['data']['id']
-        else:
+        if 'data' in prov_data and prov_data['data']:
+            proveedor_id = prov_data['data'].get('id') or prov_data['data'].get('id_proveedor')
+        elif 'id' in prov_data:
             proveedor_id = prov_data['id']
+        elif 'id_proveedor' in prov_data:
+            proveedor_id = prov_data['id_proveedor']
+        else:
+            raise ValueError(f"Could not extract proveedor ID from response: {prov_data}")
         
         prod_response = client.post('/api/productos',
             json={
